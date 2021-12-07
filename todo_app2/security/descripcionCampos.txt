@@ -1,0 +1,5 @@
+id es el identificador externo del registro (también conocido como XML ID). Debe ser único en nuestro módulo.
+name es un título de descripción. Es sólo informativo y es mejor si se mantiene único. Los módulos oficiales normalmente usan una cadena separada por puntos con el nombre del modelo y el grupo. Siguiendo esta convención, utilizamos todo.task.user.
+model_id es el identificador externo del modelo al que estamos dando acceso. Los modelos tienen XML IDs generados automáticamente por el ORM: para todo.task, el identificador es model_todo_task.
+group_id identifica el grupo de seguridad para dar permisos. Los más importantes son proporcionados por el módulo base. El grupo Empleado es un caso así y tiene el identificador base.group_user.
+Los campos perm marcan el acceso a garantizar read, write, create o un link (borrar) el acceso.
