@@ -1,0 +1,97 @@
+<odoo>
+    <record id="view_form_todo_task_inherited" model="ir.ui.view"> 
+    <field name="name">view_form_todo_task_inherited</field>
+    <field name="model">todo.task</field> 
+    <!-- El campo inherit_id identifica la vista que debe extenderse consultando su identificador 
+    externo usando el atributo especial ref -->
+    <field name="inherit_id" ref="todo_app2.view_form_todo_task"/>
+    <!-- Las formas, listas y vistas de búsqueda se definen utilizando las estructuras de arch XML.
+    Para ampliar vistas, necesitamos una forma de modificar este XML. Esto significa localizar 
+    elementos XML y luego introducir modificaciones en esos puntos. -->
+    <field name="arch" type="xml"> 
+
+
+    <!-- after agrega el contenido al elemento padre, después del nodo coincidente. -->
+    <field name="name" position="after">
+      <field name="user_id" />
+    </field> 
+     <!-- before añade el contenido, antes del nodo coincidente.    -->
+    <field name="is_done" position="before"> 
+      <field name="date_deadline" /> 
+    </field> 
+
+<!-- attributes modifica los atributos XML del elemento emparejado. Esto se hace utilizando en los
+elementos del contenido <attribute name = "attr-name"> con los nuevos valores de atributo que 
+se deben establecer.
+Por ejemplo, en el formulario Tarea, tenemos el campo activo, pero tenerlo visible no es tan útil. 
+Podríamos ocultarlo del usuario. Esto puede hacerse estableciendo su atributo invisible:         -->
+    <field name="active" position="attributes"> 
+        <attribute name="invisible">1</attribute> 
+        </field> 
+
+<!-- Para el tercer punto, queremos agregar los widgets de red social en la parte inferior del formulario.
+Esto se hace extendiendo la definición de vista de formulario. Podemos reutilizar la vista heredada que
+ ya hemos creado, view_form_todo_task_inherited, y añadirla a sus datos arch: -->
+
+        <!-- Open Chatter widgets -->
+        <sheet position="after"> 
+        <div class="oe_chatter"> 
+            <field name="message_follower_ids" 
+            widget="mail_followers" /> 
+            <field name="message_ids" widget="mail_thread" /> 
+        </div> 
+        </sheet> 
+
+    </field>
+    </record> 
+
+     <!-- Extend list -->
+    <record id="view_tree_todo_task_inherited" model="ir.ui.view">
+      <field name="name">view_tree_todo_task_inherited</field>
+      <field name="model">todo.task</field>
+      <field name="inherit_id" ref="todo_app2.view_tree_todo_task"/>
+      <field name="arch" type="xml">
+
+        <field name="name" position="after">
+          <field name="user_id" />
+        </field>
+      </field>
+    </record>
+
+     <!-- Extend search -->
+    <record id="view_filter_todo_task_inherited" model="ir.ui.view">
+      <field name="name">view_filter_todo_task_inherited</field>
+      <field name="model">todo.task</field>
+      <field name="inherit_id" ref="todo_app2.view_filter_todo_task"/>
+      <field name="arch" type="xml">
+
+        <field name="name" position="after">
+            <field name="user_id" />
+<!-- Para la vista de búsqueda, agregamos la búsqueda por el usuario y filtros predefinidos 
+para las propias tareas del usuario y las tareas no asignadas a nadie:-->
+            <filter name="filter_my_tasks" string="My Tasks" 
+                domain="[('user_id','in',[uid,False])]" /> 
+            <filter name="filter_not_assigned" string="Not Assigned" 
+                domain="[('user_id','=',False)]" />     
+            </field>
+      </field>
+    </record>
+
+      <!-- Modify menu item -->
+      <!-- en esta parte cambiamos el nombre del texto del menú de color negro -->
+    <record id="todo_app2.menu_todo_task" model="ir.ui.menu">
+        <field name="name">My To-Do</field>
+    </record>
+
+    <!-- Action to open To-Do Task list -->
+    <!-- esta opción es para que apenas entremos a la addon, nos aparezca de forma predeterminada
+    un filtro seleccionado -->
+
+     <!-- Las acciones tienen un atributo contextual opcional. Puede proporcionar valores 
+     predeterminados para campos de vista y filtros. Lo utilizaremos para activar de forma 
+     predeterminada el filtro Mis tareas -->
+    <record model="ir.actions.act_window" id="todo_app2.action_todo_task">
+        <field name="context">{'search_default_filter_my_tasks': True}</field>
+    </record>
+
+</odoo>

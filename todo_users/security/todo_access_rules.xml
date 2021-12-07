@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?> 
+
+<!-- La aplicación Tareas incluye una regla de registro para garantizar que cada tarea 
+sólo fuera visible para el usuario que la creó. Pero ahora, con la adición de características 
+sociales, necesitamos que los seguidores de las tareas también tengan acceso a ellas. El módulo 
+de red social no maneja esto por sí mismo. -->
+
+<odoo> 
+<!-- El atributo noupdate = "1" del elemento de registro significa que estos datos de registro 
+sólo se escribirán en las acciones de instalación y se ignorarán en las actualizaciones del módulo. -->
+  <data noupdate="1"> 
+    <record id="todo_app2.todo_task_per_user_rule" model="ir.rule"> 
+      <field name="name">ToDo Tasks for owner and followers</field> 
+      <field name="model_id" ref="model_todo_task"/> 
+      <!-- El código 4 utilizado aquí es para añadir a la lista de registros relacionados       -->
+      <field name="groups" eval="[(4, ref('base.group_user'))]"/> 
+<!-- El nuevo filtro de dominio ahora hace que una tarea sea visible para el usuario responsable,
+user_id o para todos si el usuario responsable no está establecido(equivale a False);
+Es visible para todos los seguidores de la tarea también. -->
+      <field name="domain_force"> 
+        ['|',('user_id','in', [user.id,False]), 
+        ('message_follower_ids','in',
+        [user.partner_id.id])] 
+      </field> 
+    </record> 
+  </data> 
+</odoo> 
